@@ -40,7 +40,7 @@ async def post_new_incident(db: Session, new_incident):
         db.refresh(incident)
         
         message = {
-            "type": "Added",
+            "type": "added",
             "data": {
                 "title": incident.title,
                 "description": incident.description,
