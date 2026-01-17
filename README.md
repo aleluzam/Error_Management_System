@@ -1,41 +1,41 @@
 # 🚨 Error Management System
 
-API REST para gestión de incidentes en tiempo real con notificaciones WebSocket.
+REST API for real-time incident management with WebSocket notifications.
 
 ---
 
-## ✨ Características
+## ✨ Features
 
-- ✅ Endpoints para agragar incidencias
-- ✅ Autenticación con JWT
-- ✅ Notificaciones en tiempo real (WebSocket)
-- ✅ Clasificación por severidad (low, medium, high, critical)
-- ✅ Sistema de resolución de incidentes para usuarios autenticados
-- ✅ Documentación interactiva (Swagger/ReDoc)
+- ✅ Endpoints for adding incidents
+- ✅ JWT Authentication
+- ✅ Real-time notifications (WebSocket)
+- ✅ Severity classification (low, medium, high, critical)
+- ✅ Incident resolution system for authenticated users
+- ✅ Interactive documentation (Swagger/ReDoc)
 
 ---
 
-## 🛠️ Tecnologías
+## 🛠️ Technologies
 
 - **Backend:** FastAPI 0.104+
-- **Base de Datos:** PostgreSQL
+- **Database:** PostgreSQL
 - **ORM:** SQLAlchemy 2.0+
-- **Autenticación:** JWT (PyJWT)
+- **Authentication:** JWT (PyJWT)
 - **WebSockets:** FastAPI WebSocket
-- **Validación:** Pydantic
+- **Validation:** Pydantic
 
 ---
 
-## 🚀 Instalación
+## 🚀 Installation
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/aleluzam/incident_management_system.git
 cd incident-management
 ```
 
-### 2. Crear entorno virtual
+### 2. Create virtual environment
 
 ```bash
 python -m venv venv
@@ -47,48 +47,48 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### 3. Instalar dependencias
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variables de entorno
+### 4. Configure environment variables
 
-#### Crea un archivo .env en la raiz del proyecto
+#### Create a .env file in the project root
 
 ```bash
-# Base de Datos
+# Database
 DATABASE_URL=postgresql://user:password@localhost:5432/incidents_db
 
-# Seguridad
-SECRET_KEY=tu_clave_secreta_super_segura_aqui
+# Security
+SECRET_KEY=your_super_secure_secret_key_here
 ALGORITHM=HS256
 
-# CORS (URLs permitidas separadas por coma)
+# CORS (Allowed URLs separated by comma)
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 
 ```
 
-### 5. Ejecutar el servidor
+### 5. Run the server
 
 ```bash
 fastapi dev app/main.py
 ```
 
-##### El servidor estara disponible en http://localhost:8080
+##### The server will be available at http://localhost:8080
 
 ---
 
-## 📡 Endpoints - Resumen Simple
+## 📡 Endpoints - Simple Summary
 
-## 🔐 Autenticación
+## 🔐 Authentication
 
 #### **POST /api/v1/register**
 
-Registra un nuevo usuario
+Register a new user
 
-**Pide:**
+**Request:**
 
 ```json
 {
@@ -97,7 +97,7 @@ Registra un nuevo usuario
 }
 ```
 
-**Devuelve:**
+**Response:**
 
 ```json
 {
@@ -110,9 +110,9 @@ Registra un nuevo usuario
 
 ### **POST /api/v1/login**
 
-Inicia sesión y devuelve un token
+Login and returns a token
 
-**Pide:**
+**Request:**
 
 ```json
 {
@@ -121,7 +121,7 @@ Inicia sesión y devuelve un token
 }
 ```
 
-**Devuelve:**
+**Response:**
 
 ```json
 {
@@ -132,19 +132,19 @@ Inicia sesión y devuelve un token
 
 ---
 
-## 📋 **Incidentes**
+## 📋 **Incidents**
 
 ### **GET /api/v1/incidents**
 
-Lista todos los incidentes
+List all incidents
 
-**Devuelve:**
+**Response:**
 
 ```json
 [
   {
-    "title": "Servidor caído",
-    "description": "El servidor no responde",
+    "title": "Server down",
+    "description": "The server is not responding",
     "severity": "critical",
     "status": "open",
     "created_at": "2026-01-17T18:30:00"
@@ -156,24 +156,24 @@ Lista todos los incidentes
 
 ### **POST /api/v1/incidents**
 
-Crea un nuevo incidente
+Create a new incident
 
-**Pide:**
+**Request:**
 
 ```json
 {
-  "title": "Servidor caído",
-  "description": "El servidor no responde",
+  "title": "Server down",
+  "description": "The server is not responding",
   "severity": "critical"
 }
 ```
 
-**Devuelve:**
+**Response:**
 
 ```json
 {
-\  "title": "Servidor caído",
-  "description": "El servidor no responde",
+  "title": "Server down",
+  "description": "The server is not responding",
   "severity": "critical",
   "status": "open",
   "created_at": "2026-01-17T18:30:00"
@@ -184,14 +184,14 @@ Crea un nuevo incidente
 
 ### **PATCH /api/v1/incidents/{id}/resolve**
 
-Marca un incidente como resuelto
+Mark an incident as resolved
 
-**Pide:**
+**Request:**
 
 - Header: `Authorization: Bearer {token}`
-- URL: ID del incidente
+- URL: Incident ID
 
-**Da:**
+**Response:**
 
 ```json
 {
@@ -206,11 +206,11 @@ Marca un incidente como resuelto
 
 ### **WS /api/v1/ws**
 
-Conexión para recibir notificaciones en tiempo real
+Connection to receive real-time notifications
 
-**Pide:** Conexión WebSocket
+**Request:** WebSocket Connection
 
-**Devuelve (cuando se crea un incidente):**
+**Response (when an incident is created):**
 
 ```json
 {
@@ -223,7 +223,7 @@ Conexión para recibir notificaciones en tiempo real
 }
 ```
 
-**Devuelve (cuando se resuelve un incidente):**
+**Response (when an incident is resolved):**
 
 ```json
 {
