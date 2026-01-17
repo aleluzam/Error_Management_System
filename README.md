@@ -1,10 +1,10 @@
-# 🚨 Error Management System
+# Error Management System
 
 REST API for real-time incident management with WebSocket notifications.
 
 ---
 
-## ✨ Features
+## Features
 
 - ✅ Endpoints for adding incidents
 - ✅ JWT Authentication
@@ -15,7 +15,7 @@ REST API for real-time incident management with WebSocket notifications.
 
 ---
 
-## 🛠️ Technologies
+## Technologies
 
 - **Backend:** FastAPI 0.104+
 - **Database:** PostgreSQL
@@ -26,7 +26,7 @@ REST API for real-time incident management with WebSocket notifications.
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### 1. Clone the repository
 
@@ -80,9 +80,9 @@ fastapi dev app/main.py
 
 ---
 
-## 📡 Endpoints - Simple Summary
+## Endpoints - Simple Summary
 
-## 🔐 Authentication
+## Authentication
 
 #### **POST /api/v1/register**
 
@@ -132,7 +132,7 @@ Login and returns a token
 
 ---
 
-## 📋 **Incidents**
+## **Incidents**
 
 ### **GET /api/v1/incidents**
 
@@ -202,7 +202,7 @@ Mark an incident as resolved
 
 ---
 
-## 🔌 **WebSocket**
+## **WebSocket**
 
 ### **WS /api/v1/ws**
 
