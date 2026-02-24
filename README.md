@@ -1,63 +1,108 @@
 # Error Management System
 
-REST API for real-time incident management with WebSocket notifications.
+A robust REST API for real-time incident management with WebSocket notifications. Built with FastAPI and PostgreSQL, this system enables teams to create, track, and resolve incidents with live updates.
+
+---
+
+## Overview
+
+Error Management System is a backend API designed for incident tracking and management. It provides a complete solution for:
+
+- Creating and managing incidents with severity classification
+- Real-time notifications via WebSocket when incidents are added or resolved
+- Secure JWT-based authentication for protected operations
+- Interactive API documentation for easy integration
 
 ---
 
 ## Features
 
-- ✅ Endpoints for adding incidents
-- ✅ JWT Authentication
-- ✅ Real-time notifications (WebSocket)
-- ✅ Severity classification (low, medium, high, critical)
-- ✅ Incident resolution system for authenticated users
-- ✅ Interactive documentation (Swagger/ReDoc)
+| Feature | Description |
+|---------|-------------|
+| **Incident Management** | Create, list, and resolve incidents with full CRUD operations |
+| **Severity Classification** | Four levels: `low`, `medium`, `high`, `critical` |
+| **JWT Authentication** | Secure token-based authentication for protected endpoints |
+| **Real-time Notifications** | WebSocket broadcasting for instant incident updates |
+| **Input Validation** | Pydantic-based validation with clear error messages |
+| **Interactive Documentation** | Swagger UI and ReDoc for API exploration |
 
 ---
 
-## Technologies
+## Technology Stack
 
-- **Backend:** FastAPI 0.104+
-- **Database:** PostgreSQL
-- **ORM:** SQLAlchemy 2.0+
-- **Authentication:** JWT (PyJWT)
-- **WebSockets:** FastAPI WebSocket
-- **Validation:** Pydantic
+| Layer | Technology |
+|-------|------------|
+| **Framework** | FastAPI 0.128.0 |
+| **Database** | PostgreSQL |
+| **ORM** | SQLAlchemy 2.0.45 |
+| **Authentication** | JWT (python-jose) |
+| **WebSockets** | FastAPI WebSocket |
+| **Validation** | Pydantic 2.12.5 |
+| **Password Hashing** | pwdlib |
+| **Server** | Uvicorn 0.40.0 |
+
+---
+
+## Project Structure
+
+```
+backend/
+├── app/
+│   ├── main.py                  # FastAPI application entry point
+│   ├── config.py                # Configuration (SECRET_KEY, ALGORITHM)
+│   ├── database.py              # Database connection and session management
+│   ├── models.py                # SQLAlchemy ORM models
+│   ├── schemas.py               # Pydantic schemas for data validation
+│   ├── endpoints.py             # API routes and endpoints
+│   ├── crud.py                  # Database CRUD operations
+│   ├── security.py              # Authentication functions
+│   └── websockets_manager.py    # WebSocket connection manager
+├── .env                         # Environment variables
+├── requirements.txt             # Python dependencies
+└── README.md                    # Project documentation
+```
 
 ---
 
 ## Installation
 
-### 1. Clone the repository
+### Prerequisites
+
+- Python 3.10+
+- PostgreSQL database
+
+### Steps
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/aleluzam/incident_management_system.git
 cd incident-management
 ```
 
-### 2. Create virtual environment
+#### 2. Create and activate virtual environment
 
 ```bash
 python -m venv venv
 
-# Windows
-venv\Scripts\activate
-
 # Linux/Mac
 source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
 ```
 
-### 3. Install dependencies
+#### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
+#### 4. Configure environment variables
 
-#### Create a .env file in the project root
+Create a `.env` file in the project root:
 
-```bash
+```env
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/incidents_db
 
@@ -65,63 +110,76 @@ DATABASE_URL=postgresql://user:password@localhost:5432/incidents_db
 SECRET_KEY=your_super_secure_secret_key_here
 ALGORITHM=HS256
 
-# CORS (Allowed URLs separated by comma)
+# CORS (comma-separated URLs)
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
-
 ```
 
-### 5. Run the server
+#### 5. Run the server
 
 ```bash
 fastapi dev app/main.py
 ```
 
-##### The server will be available at http://localhost:8080
+The server will be available at: **http://localhost:8080**
 
 ---
 
-## Endpoints - Simple Summary
+## API Endpoints
 
-## Authentication
+### Authentication
 
-#### **POST /api/v1/register**
+#### Register User
 
-Register a new user
+```
+POST /api/v1/register
+```
 
-**Request:**
+Register a new user in the system.
+
+**Request Body:**
 
 ```json
 {
   "username": "admin",
-  "password": "admin123"
+  "password": "Admin123!"
 }
 ```
 
-**Response:**
+**Password Requirements:**
+- At least 5 characters
+- At least one uppercase letter
+- At least one number
+- At least one special character
+
+**Response (201 Created):**
 
 ```json
 {
   "message": "User registered successfully",
-  "data": "username"
+  "data": "admin"
 }
 ```
 
 ---
 
-### **POST /api/v1/login**
+#### Login
 
-Login and returns a token
+```
+POST /api/v1/login
+```
 
-**Request:**
+Authenticate and receive a JWT token.
+
+**Request Body:**
 
 ```json
 {
   "username": "admin",
-  "password": "admin123"
+  "password": "Admin123!"
 }
 ```
 
-**Response:**
+**Response (200 OK):**
 
 ```json
 {
@@ -132,106 +190,185 @@ Login and returns a token
 
 ---
 
-## **Incidents**
+### Incidents
 
-### **GET /api/v1/incidents**
+#### List All Incidents
 
-List all incidents
+```
+GET /api/v1/incidents
+```
 
-**Response:**
+Retrieve all incidents ordered by creation date (newest first).
+
+**Response (200 OK):**
 
 ```json
 [
   {
-    "title": "Server down",
-    "description": "The server is not responding",
+    "id": 1,
+    "title": "Server Down",
+    "description": "The main server is not responding to requests",
     "severity": "critical",
     "status": "open",
-    "created_at": "2026-01-17T18:30:00"
+    "created_at": "2026-02-24T10:30:00"
+  },
+  {
+    "id": 2,
+    "title": "Slow Response Time",
+    "description": "API response time has increased significantly",
+    "severity": "medium",
+    "status": "resolved",
+    "created_at": "2026-02-23T15:45:00"
   }
 ]
 ```
 
 ---
 
-### **POST /api/v1/incidents**
+#### Create Incident
 
-Create a new incident
+```
+POST /api/v1/incidents
+```
 
-**Request:**
+Create a new incident. No authentication required.
+
+**Request Body:**
 
 ```json
 {
-  "title": "Server down",
-  "description": "The server is not responding",
+  "title": "Database Connection Failure",
+  "description": "Unable to establish connection to primary database",
   "severity": "critical"
 }
 ```
 
-**Response:**
+**Severity Options:** `low`, `medium`, `high`, `critical`
+
+**Response (201 Created):**
 
 ```json
 {
-  "title": "Server down",
-  "description": "The server is not responding",
+  "id": 3,
+  "title": "Database Connection Failure",
+  "description": "Unable to establish connection to primary database",
   "severity": "critical",
   "status": "open",
-  "created_at": "2026-01-17T18:30:00"
+  "created_at": "2026-02-24T12:00:00"
 }
 ```
 
 ---
 
-### **PATCH /api/v1/incidents/{id}/resolve**
+#### Resolve Incident
 
-Mark an incident as resolved
+```
+PATCH /api/v1/incidents/{id}/resolve
+```
 
-**Request:**
+Mark an incident as resolved. **Authentication required.**
 
-- Header: `Authorization: Bearer {token}`
-- URL: Incident ID
+**Headers:**
 
-**Response:**
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**Response (200 OK):**
 
 ```json
 {
   "message": "Incident resolved",
-  "incident status": "resolved"
+  "incident_status": "resolved"
 }
 ```
 
 ---
 
-## **WebSocket**
+### WebSocket
 
-### **WS /api/v1/ws**
+#### Real-time Notifications
 
-Connection to receive real-time notifications
+```
+WS /api/v1/ws
+```
 
-**Request:** WebSocket Connection
+Connect to WebSocket for real-time incident updates.
 
-**Response (when an incident is created):**
+**Connection:**
+
+```javascript
+const ws = new WebSocket('ws://localhost:8080/api/v1/ws');
+```
+
+**Message Types:**
+
+When an incident is created:
 
 ```json
 {
   "type": "added",
   "data": {
-    "title": "New incident",
-    "description": "Incident description",
-    "severity": "low"
+    "id": 3,
+    "title": "Database Connection Failure",
+    "description": "Unable to establish connection to primary database",
+    "severity": "critical",
+    "status": "open",
+    "created_at": "2026-02-24T12:00:00"
   }
 }
 ```
 
-**Response (when an incident is resolved):**
+When an incident is resolved:
 
 ```json
 {
   "type": "resolved",
   "data": {
-    "title": "New incident",
-    "description": "Incident description",
-    "severity": "low"
+    "id": 3,
+    "title": "Database Connection Failure",
+    "description": "Unable to establish connection to primary database",
+    "severity": "critical",
+    "status": "resolved",
+    "created_at": "2026-02-24T12:00:00"
   }
 }
 ```
+
+---
+
+## Interactive Documentation
+
+Once the server is running, access the interactive API documentation:
+
+| Documentation | URL |
+|--------------|-----|
+| **Swagger UI** | http://localhost:8080/docs |
+| **ReDoc** | http://localhost:8080/redoc |
+
+---
+
+## Error Responses
+
+The API returns appropriate HTTP status codes:
+
+| Status Code | Description |
+|-------------|-------------|
+| `200` | Success |
+| `201` | Created |
+| `400` | Bad Request - Invalid input |
+| `401` | Unauthorized - Invalid or missing token |
+| `404` | Not Found - Resource doesn't exist |
+| `422` | Validation Error |
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+Developed by [Alejandro Luzardo](https://github.com/aleluzam)
